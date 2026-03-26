@@ -18,146 +18,250 @@ st.set_page_config(
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
 
 :root {
-    --bg-primary:   #0a0e1a;
-    --bg-card:      #111827;
-    --bg-card2:     #1a2236;
-    --accent-green: #00ff9d;
-    --accent-red:   #ff4d6d;
-    --accent-blue:  #4d8cff;
-    --accent-gold:  #ffd166;
-    --text-main:    #e8eaf0;
-    --text-muted:   #6b7a99;
-    --border:       #1f2d45;
+    --bg-primary:   #060b14;
+    --bg-card:      #0d1626;
+    --bg-card2:     #111f36;
+    --accent-green: #05f5a0;
+    --accent-red:   #ff3a5c;
+    --accent-blue:  #3d85ff;
+    --accent-gold:  #ffcc44;
+    --accent-purple:#a855f7;
+    --text-main:    #dde4f0;
+    --text-muted:   #4d6080;
+    --border:       #162035;
+    --border-bright:#1e3050;
 }
 
-html, body, [class*="css"] {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: var(--bg-primary);
-    color: var(--text-main);
-}
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: var(--bg-card) !important;
-    border-right: 1px solid var(--border);
-}
-section[data-testid="stSidebar"] * {
+/* ── Hard reset: Streamlit 기본 배경 제거 ── */
+html, body { background-color: var(--bg-primary) !important; }
+.stApp, .stApp > div, [data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stVerticalBlock"],
+[data-testid="block-container"],
+.main, .main > div, .block-container {
+    background-color: var(--bg-primary) !important;
     color: var(--text-main) !important;
 }
+[class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
 
-/* Hide default header */
-header[data-testid="stHeader"] { background: transparent; }
+/* ── Sidebar ── */
+section[data-testid="stSidebar"],
+section[data-testid="stSidebar"] > div {
+    background: #080f1e !important;
+    border-right: 1px solid var(--border) !important;
+}
+section[data-testid="stSidebar"] * { color: var(--text-main) !important; }
 
-/* Metric cards */
-.metric-card {
-    background: var(--bg-card);
+/* ── Top bar ── */
+header[data-testid="stHeader"],
+[data-testid="stToolbar"] {
+    background: rgba(6,11,20,0.95) !important;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Tabs ── */
+[data-testid="stTabs"] [role="tablist"] {
+    background: var(--bg-card) !important;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    transition: border-color .2s;
 }
-.metric-card:hover { border-color: var(--accent-blue); }
-.metric-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--text-muted);
+[data-testid="stTabs"] button[role="tab"] {
+    font-family: 'Space Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 1.5px !important;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    color: var(--text-muted) !important;
+    border-radius: 7px !important;
+    padding: 8px 16px !important;
+    background: transparent !important;
+    border: none !important;
+    transition: all .2s !important;
 }
-.metric-value {
-    font-family: 'Space Mono', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-main);
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    background: var(--accent-blue) !important;
+    color: #fff !important;
+    box-shadow: 0 0 18px rgba(61,133,255,.45) !important;
 }
-.metric-delta-pos { color: var(--accent-green); font-size: 13px; }
-.metric-delta-neg { color: var(--accent-red);   font-size: 13px; }
+[data-testid="stTabs"] [role="tabpanel"] {
+    background: transparent !important;
+    padding-top: 20px !important;
+}
 
-/* Section title */
-.section-title {
+/* ── KPI Cards ── */
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 20px 22px 16px;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+}
+.kpi-card.green  { border: 1px solid rgba(5,245,160,.35); box-shadow: 0 0 24px rgba(5,245,160,.08) inset, 0 0 1px rgba(5,245,160,.6); }
+.kpi-card.red    { border: 1px solid rgba(255,58,92,.35);  box-shadow: 0 0 24px rgba(255,58,92,.08) inset, 0 0 1px rgba(255,58,92,.6); }
+.kpi-card.blue   { border: 1px solid rgba(61,133,255,.35); box-shadow: 0 0 24px rgba(61,133,255,.08) inset, 0 0 1px rgba(61,133,255,.6); }
+.kpi-card.purple { border: 1px solid rgba(168,85,247,.35); box-shadow: 0 0 24px rgba(168,85,247,.08) inset, 0 0 1px rgba(168,85,247,.6); }
+
+.kpi-label {
     font-family: 'Space Mono', monospace;
-    font-size: 13px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.kpi-card.green  .kpi-label { color: var(--accent-green); }
+.kpi-card.red    .kpi-label { color: var(--accent-red); }
+.kpi-card.blue   .kpi-label { color: var(--accent-blue); }
+.kpi-card.purple .kpi-label { color: var(--accent-purple); }
+
+.kpi-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kpi-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+}
+.kpi-card.green  .kpi-value { color: var(--accent-green); }
+.kpi-card.red    .kpi-value { color: var(--accent-red); }
+.kpi-card.blue   .kpi-value { color: var(--accent-blue); }
+.kpi-card.purple .kpi-value { color: var(--accent-purple); }
+
+/* ── Section headers ── */
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 14px;
+}
+.sec-head-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-bright) 0%, transparent 100%);
+}
+.sec-head-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--accent-gold);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    margin: 24px 0 16px 0;
+    white-space: nowrap;
 }
 
-/* Hero banner */
+/* ── Hero ── */
 .hero {
-    background: linear-gradient(135deg, #0d1f3c 0%, #0a0e1a 60%, #0d2b1f 100%);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px 36px;
-    margin-bottom: 24px;
+    background: linear-gradient(125deg, #0a1628 0%, #060b14 55%, #071a10 100%);
+    border: 1px solid var(--border-bright);
+    border-radius: 18px;
+    padding: 30px 40px;
+    margin-bottom: 28px;
     position: relative;
     overflow: hidden;
 }
 .hero::before {
     content: '';
     position: absolute;
-    top: -60px; right: -60px;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(5,245,160,.06) 0%, transparent 65%);
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
     width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(0,255,157,.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(61,133,255,.05) 0%, transparent 65%);
+}
+.hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(5,245,160,.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(5,245,160,.25);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+}
+.hero-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-green);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .4; transform: scale(.7); }
 }
 .hero-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 26px;
-    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 30px;
+    font-weight: 900;
     color: #fff;
-    margin: 0 0 4px 0;
+    letter-spacing: -0.5px;
+    margin: 0 0 6px;
+    line-height: 1.2;
 }
-.hero-sub {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin: 0;
-}
-.hero-badge {
-    display: inline-block;
-    background: rgba(0,255,157,.12);
-    color: var(--accent-green);
-    border: 1px solid rgba(0,255,157,.3);
-    border-radius: 20px;
-    padding: 3px 12px;
-    font-size: 11px;
-    font-family: 'Space Mono', monospace;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-}
+.hero-sub { color: var(--text-muted); font-size: 13px; margin: 0; }
 
-/* Tag chips */
-.tag {
-    display: inline-block;
-    background: rgba(77,140,255,.12);
-    color: var(--accent-blue);
-    border-radius: 6px;
-    padding: 2px 10px;
-    font-size: 12px;
-    margin: 2px;
-}
-.tag-kr { background: rgba(255,209,102,.1); color: var(--accent-gold); }
+/* ── Metric delta colors ── */
+.pos { color: var(--accent-green); }
+.neg { color: var(--accent-red); }
 
-/* Streamlit element overrides */
+/* ── Selects / inputs ── */
 div[data-testid="stSelectbox"] label,
 div[data-testid="stMultiSelect"] label,
-div[data-testid="stSlider"] label,
-div[data-testid="stDateInput"] label { color: var(--text-muted) !important; font-size: 12px; }
-
-div[data-testid="stTabs"] button {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
+div[data-testid="stRadio"] label,
+div[data-testid="stToggle"] label {
+    color: var(--text-muted) !important;
+    font-size: 11px !important;
     letter-spacing: 1px;
+    text-transform: uppercase;
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background: rgba(61,133,255,.2) !important;
+    border: 1px solid rgba(61,133,255,.4) !important;
 }
 
-/* Plotly chart background fix */
-.js-plotly-plot .plotly { background: transparent !important; }
+/* ── Buttons ── */
+[data-testid="stButton"] button {
+    background: var(--bg-card2) !important;
+    border: 1px solid var(--border-bright) !important;
+    color: var(--text-main) !important;
+    border-radius: 8px !important;
+    font-family: 'Space Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 1px !important;
+    transition: all .2s !important;
+}
+[data-testid="stButton"] button:hover {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 12px rgba(61,133,255,.3) !important;
+}
+
+/* ── Dataframe ── */
+[data-testid="stDataFrame"] { border: 1px solid var(--border) !important; border-radius: 10px !important; }
+
+/* ── Plotly transparent bg ── */
+.js-plotly-plot { background: transparent !important; }
+.js-plotly-plot .plotly .bg { fill: transparent !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -238,8 +342,15 @@ def fetch_info(ticker: str) -> dict:
 
 def fmt_pct(val):
     sign = "▲" if val >= 0 else "▼"
-    cls  = "metric-delta-pos" if val >= 0 else "metric-delta-neg"
+    cls  = "pos" if val >= 0 else "neg"
     return f'<span class="{cls}">{sign} {abs(val):.2f}%</span>'
+
+def sec_head(text):
+    st.markdown(f"""
+    <div class="sec-head">
+      <span class="sec-head-text">{text}</span>
+      <div class="sec-head-line"></div>
+    </div>""", unsafe_allow_html=True)
 
 def calc_return(df: pd.DataFrame) -> float | None:
     if df.empty or len(df) < 2:
@@ -308,9 +419,12 @@ if not selected_all:
 now_str = datetime.now().strftime("%Y.%m.%d  %H:%M")
 st.markdown(f"""
 <div class="hero">
-  <div class="hero-badge">LIVE MARKET DATA</div>
-  <p class="hero-title">📈 글로벌 주식 비교 대시보드</p>
-  <p class="hero-sub">한국 · 미국 주요 종목 수익률 & 차트 한눈에 비교 &nbsp;|&nbsp; 업데이트: {now_str}</p>
+  <div class="hero-eyebrow">
+    <span class="hero-dot"></span>
+    LIVE MARKET DATA
+  </div>
+  <p class="hero-title">글로벌 주식 비교 대시보드 📊</p>
+  <p class="hero-sub">🇰🇷 한국 &nbsp;·&nbsp; 🇺🇸 미국 주요 종목 수익률 & 차트 한눈에 비교 &nbsp;·&nbsp; 업데이트: {now_str}</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -348,48 +462,68 @@ with tab1:
         pos_count  = sum(1 for v in returns.values() if v >= 0)
 
         c1, c2, c3, c4 = st.columns(4)
-        kpis = [
-            (c1, "최고 수익률", best_name,  returns[best_name]),
-            (c2, "최저 수익률", worst_name, returns[worst_name]),
-            (c3, "평균 수익률", f"{len(returns)}개 종목",  avg_return),
-            (c4, "상승 종목 수", f"{pos_count}/{len(returns)}",  None),
+        kpi_data = [
+            (c1, "green",  "🏆 최고 수익률",  best_name,  f"{returns[best_name]:+.2f}%"),
+            (c2, "red",    "📉 최저 수익률",  worst_name, f"{returns[worst_name]:+.2f}%"),
+            (c3, "blue",   "📊 평균 수익률",  f"{len(returns)}개 종목",  f"{avg_return:+.2f}%"),
+            (c4, "purple", "🔺 상승 종목",    f"{pos_count}/{len(returns)} 종목",
+             f"{pos_count/len(returns)*100:.0f}% 상승"),
         ]
-        for col, title, sub, val in kpis:
-            with col:
-                delta_html = fmt_pct(val) if val is not None else ""
-                col.markdown(f"""
-                <div class="metric-card">
-                  <div class="metric-title">{title}</div>
-                  <div class="metric-value">{sub}</div>
-                  {delta_html}
-                </div>""", unsafe_allow_html=True)
+        for col, color, label, name_txt, val_txt in kpi_data:
+            col.markdown(f"""
+            <div class="kpi-card {color}">
+              <div class="kpi-label">{label}</div>
+              <div class="kpi-name">{name_txt}</div>
+              <div class="kpi-value">{val_txt}</div>
+            </div>""", unsafe_allow_html=True)
 
-        # ── Bar chart ────────────────────────────────────────────────────────
-        st.markdown('<div class="section-title">수익률 순위 ({})'.format(period_label) + '</div>', unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
-        sorted_ret = dict(sorted(returns.items(), key=lambda x: x[1], reverse=True))
-        bar_colors = ["#00ff9d" if v >= 0 else "#ff4d6d" for v in sorted_ret.values()]
-        bar_text   = [f"{v:+.2f}%" for v in sorted_ret.values()]
+        # ── Horizontal bar chart (가로 막대 — 수익률 차이가 커도 모두 보임) ──
+        sec_head(f"수익률 순위  ({period_label})")
+
+        sorted_ret = dict(sorted(returns.items(), key=lambda x: x[1]))
+        names  = list(sorted_ret.keys())
+        values = list(sorted_ret.values())
+        bar_colors = ["#05f5a0" if v >= 0 else "#ff3a5c" for v in values]
+        bar_text   = [f" {v:+.2f}%" for v in values]
 
         fig_bar = go.Figure(go.Bar(
-            x=list(sorted_ret.keys()),
-            y=list(sorted_ret.values()),
-            marker_color=bar_colors,
+            y=names,
+            x=values,
+            orientation="h",
+            marker=dict(
+                color=bar_colors,
+                line=dict(width=0),
+            ),
             text=bar_text,
             textposition="outside",
-            textfont=dict(family="Space Mono", size=10),
+            textfont=dict(family="Space Mono", size=11, color="#dde4f0"),
+            cliponaxis=False,
         ))
-        fig_bar.add_hline(y=0, line_width=1, line_color="#1f2d45")
+        fig_bar.add_vline(x=0, line_width=1.5, line_color="#1e3050")
         fig_bar.update_layout(
             **PLOTLY_LAYOUT,
-            height=380,
-            yaxis_title="수익률 (%)",
+            height=max(320, len(names) * 44),
+            xaxis=dict(
+                title="수익률 (%)",
+                gridcolor="#162035",
+                zerolinecolor="#1e3050",
+                ticksuffix="%",
+                tickfont=dict(family="Space Mono", size=10),
+            ),
+            yaxis=dict(
+                gridcolor="#162035",
+                tickfont=dict(family="Noto Sans KR", size=12, color="#dde4f0"),
+                automargin=True,
+            ),
             showlegend=False,
+            bargap=0.35,
         )
         st.plotly_chart(fig_bar, use_container_width=True)
 
         # ── Scatter: return vs volatility ─────────────────────────────────────
-        st.markdown('<div class="section-title">리스크-수익률 산점도</div>', unsafe_allow_html=True)
+        sec_head("리스크 — 수익률 산점도")
 
         scatter_x, scatter_y, scatter_labels, scatter_colors = [], [], [], []
         for i, (name, df) in enumerate(data.items()):
@@ -429,7 +563,7 @@ with tab1:
 # TAB 2 — Normalized Price Chart
 # ════════════════════════════════════════════════════════════════════════════════
 with tab2:
-    st.markdown('<div class="section-title">정규화 가격 차트 (시작 = 100)</div>', unsafe_allow_html=True)
+    sec_head("정규화 가격 차트 (시작 = 100)")
 
     rows = 2 if show_volume else 1
     specs = [[{"secondary_y": False}]] * rows
@@ -484,7 +618,7 @@ with tab2:
     st.plotly_chart(fig_norm, use_container_width=True)
 
     # ── Correlation heatmap ──────────────────────────────────────────────────
-    st.markdown('<div class="section-title">종목 간 상관관계 히트맵</div>', unsafe_allow_html=True)
+    sec_head("종목 간 상관관계 히트맵")
 
     corr_df = pd.DataFrame()
     for name, df in data.items():
@@ -515,7 +649,7 @@ with tab2:
 # TAB 3 — Individual Stock Candlestick
 # ════════════════════════════════════════════════════════════════════════════════
 with tab3:
-    st.markdown('<div class="section-title">개별 종목 상세 분석</div>', unsafe_allow_html=True)
+    sec_head("개별 종목 상세 분석")
 
     stock_choice = st.selectbox("종목 선택", list(selected_all.keys()))
     ticker_choice = selected_all[stock_choice]
@@ -528,11 +662,11 @@ with tab3:
         info = fetch_info(ticker_choice)
         col_i1, col_i2, col_i3, col_i4 = st.columns(4)
 
-        def info_card(col, title, value):
+        def info_card(col, color, title, value):
             col.markdown(f"""
-            <div class="metric-card">
-              <div class="metric-title">{title}</div>
-              <div class="metric-value" style="font-size:16px">{value}</div>
+            <div class="kpi-card {color}">
+              <div class="kpi-label">{title}</div>
+              <div class="kpi-value" style="font-size:18px">{value}</div>
             </div>""", unsafe_allow_html=True)
 
         market_cap = info.get("marketCap", 0)
@@ -541,10 +675,10 @@ with tab3:
         else:
             cap_str = "N/A"
 
-        info_card(col_i1, "52W 최고", f"{info.get('fiftyTwoWeekHigh','N/A')}")
-        info_card(col_i2, "52W 최저", f"{info.get('fiftyTwoWeekLow','N/A')}")
-        info_card(col_i3, "시가총액", cap_str)
-        info_card(col_i4, "P/E Ratio", f"{info.get('trailingPE','N/A')}")
+        info_card(col_i1, "green",  "52W 최고", f"{info.get('fiftyTwoWeekHigh','N/A')}")
+        info_card(col_i2, "red",    "52W 최저", f"{info.get('fiftyTwoWeekLow','N/A')}")
+        info_card(col_i3, "blue",   "시가총액",  cap_str)
+        info_card(col_i4, "purple", "P/E Ratio", f"{info.get('trailingPE','N/A')}")
 
         # Candlestick / Line
         rows_ind = 2 if show_volume else 1
@@ -597,7 +731,7 @@ with tab3:
 # TAB 4 — Data Table
 # ════════════════════════════════════════════════════════════════════════════════
 with tab4:
-    st.markdown('<div class="section-title">종목 요약 데이터</div>', unsafe_allow_html=True)
+    sec_head("종목 요약 데이터")
 
     rows_list = []
     for name, df in data.items():
