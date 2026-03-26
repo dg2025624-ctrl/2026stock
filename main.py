@@ -505,20 +505,20 @@ with tab1:
         fig_bar.update_layout(
             **PLOTLY_LAYOUT,
             height=max(320, len(names) * 44),
-            xaxis=dict(
-                title="수익률 (%)",
-                gridcolor="#162035",
-                zerolinecolor="#1e3050",
-                ticksuffix="%",
-                tickfont=dict(family="Space Mono", size=10),
-            ),
-            yaxis=dict(
-                gridcolor="#162035",
-                tickfont=dict(family="Noto Sans KR", size=12, color="#dde4f0"),
-                automargin=True,
-            ),
             showlegend=False,
             bargap=0.35,
+        )
+        fig_bar.update_xaxes(
+            title_text="수익률 (%)",
+            gridcolor="#162035",
+            zerolinecolor="#1e3050",
+            ticksuffix="%",
+            tickfont=dict(family="Space Mono", size=10),
+        )
+        fig_bar.update_yaxes(
+            gridcolor="#162035",
+            tickfont=dict(family="Noto Sans KR", size=12, color="#dde4f0"),
+            automargin=True,
         )
         st.plotly_chart(fig_bar, use_container_width=True)
 
